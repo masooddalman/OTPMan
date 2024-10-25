@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "OTPCodeUsage"
 include(":app")
+include(":OTPMan")
