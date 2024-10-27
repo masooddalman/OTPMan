@@ -17,5 +17,6 @@ data class DataModelChip(
     companion object{
        fun normal() = DataModelChip(size = 50, backColor = Color.Gray, borderColor = Color.Transparent, borderWidth = 0, cornerRadius = 8)
         fun selected() = DataModelChip(size = 50, backColor = Color.LightGray, borderColor = Color.Cyan, borderWidth = 2, cornerRadius = 16)
+        fun verified() = DataModelChip(size = 50, backColor = Color.LightGray, borderColor = Color.Green, borderWidth = 4, cornerRadius = 20)
     }
 }
