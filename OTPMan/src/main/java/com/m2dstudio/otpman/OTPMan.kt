@@ -39,6 +39,7 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
            normal:DataModelChip = DataModelChip.normal(),
            selected:DataModelChip = DataModelChip.selected(),
            verified:DataModelChip = DataModelChip.verified(),
+           error:DataModelChip = DataModelChip.error(),
            onComplete:(String)->Unit
            )
 {
@@ -113,6 +114,9 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
                     state = if(textData[index].isEmpty()) ChipState.Normal else ChipState.Selected,
                     normal = normal,
                     selected = selected
+                    selected = selected,
+                    verified = verified,
+                    error = error
                 )
             }
         }
