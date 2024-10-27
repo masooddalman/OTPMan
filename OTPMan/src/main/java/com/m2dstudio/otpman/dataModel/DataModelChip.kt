@@ -18,5 +18,6 @@ data class DataModelChip(
        fun normal() = DataModelChip(size = 50, backColor = Color.Gray, borderColor = Color.Transparent, borderWidth = 0, cornerRadius = 8)
         fun selected() = DataModelChip(size = 50, backColor = Color.LightGray, borderColor = Color.Cyan, borderWidth = 2, cornerRadius = 16)
         fun verified() = DataModelChip(size = 50, backColor = Color.LightGray, borderColor = Color.Green, borderWidth = 4, cornerRadius = 20)
+        fun error() = DataModelChip(size = 50, backColor = Color.Red.copy(alpha = 0.25f), borderColor = Color.Red, borderWidth = 4, cornerRadius = 16)
     }
 }
