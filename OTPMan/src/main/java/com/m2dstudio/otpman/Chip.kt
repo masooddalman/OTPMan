@@ -24,6 +24,8 @@ import com.m2dstudio.otpman.dataModel.DataModelChip
 enum class ChipState{
     Normal,
     Selected
+    Selected,
+    Verified,
 }
 @Composable
 fun Chip(modifier: Modifier,
@@ -31,6 +33,8 @@ fun Chip(modifier: Modifier,
          state: ChipState,
          normal:DataModelChip,
          selected:DataModelChip
+         selected:DataModelChip,
+         verified:DataModelChip,
          )
 {
     val animationDuration = 250
@@ -39,6 +43,7 @@ fun Chip(modifier: Modifier,
         when(state){
             ChipState.Normal -> normal.backColor
             ChipState.Selected -> selected.backColor
+            ChipState.Verified -> verified.backColor
         }, label = "backColor",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
     )
@@ -47,6 +52,7 @@ fun Chip(modifier: Modifier,
         when(state){
             ChipState.Normal -> normal.borderColor
             ChipState.Selected -> selected.borderColor
+            ChipState.Verified -> verified.borderColor
         }, label = "borderColor",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
     )
@@ -55,6 +61,7 @@ fun Chip(modifier: Modifier,
         when(state) {
             ChipState.Normal -> normal.borderWidth
             ChipState.Selected -> selected.borderWidth
+            ChipState.Verified -> verified.borderWidth
         }, label = "borderWidth",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
     )
@@ -63,6 +70,7 @@ fun Chip(modifier: Modifier,
         when(state) {
             ChipState.Normal -> normal.cornerRadius
             ChipState.Selected -> selected.cornerRadius
+            ChipState.Verified -> verified.cornerRadius
         }, label = "cornerRadius",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
     )
@@ -71,6 +79,7 @@ fun Chip(modifier: Modifier,
         when(state) {
             ChipState.Normal -> normal.size
             ChipState.Selected -> selected.size
+            ChipState.Verified -> verified.size
         }, label = "size",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
     )
@@ -100,6 +109,8 @@ fun SampleShapePreview()
         state = ChipState.Normal,
         normal = DataModelChip.normal(),
         selected = DataModelChip.selected()
+        selected = DataModelChip.selected(),
+        verified = DataModelChip.verified(),
     )
 }
 
