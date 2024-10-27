@@ -1,5 +1,6 @@
 package com.m2dstudio.otpman
 
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +41,7 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
            selected:DataModelChip = DataModelChip.selected(),
            verified:DataModelChip = DataModelChip.verified(),
            error:DataModelChip = DataModelChip.error(),
+           showRippleEffect:Boolean = false,
            onComplete:(String)->Unit
            )
 {
@@ -124,7 +126,10 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
             modifier
                 .fillMaxWidth()
                 .height(normal.size.dp)
-                .clickable {
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = if (showRippleEffect) LocalIndication.current else null
+                ) {
                     focusManager.clearFocus()
                     focus.requestFocus()
                 }
