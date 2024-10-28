@@ -42,6 +42,7 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
            verified:DataModelChip = DataModelChip.verified(),
            error:DataModelChip = DataModelChip.error(),
            showRippleEffect:Boolean = false,
+           onValueChange:(String)->Unit = {},
            onComplete:(String)->Unit
            )
 {
@@ -84,6 +85,7 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
                         {
                             textData[i] = ""
                         }
+                        onValueChange(value)
                     }
                 }
                 if (it.length >= count)
