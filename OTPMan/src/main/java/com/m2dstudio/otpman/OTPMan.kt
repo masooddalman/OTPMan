@@ -42,6 +42,7 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
            verified:DataModelChip = DataModelChip.verified(),
            error:DataModelChip = DataModelChip.error(),
            showRippleEffect:Boolean = false,
+           otpState: OTPState = OTPState.Idle,
            onValueChange:(String)->Unit = {},
            onComplete:(String)->Unit
            )
@@ -115,9 +116,8 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
             items(count) { index ->
                 Chip(modifier = Modifier,
                     str = textData[index],
-                    state = if(textData[index].isEmpty()) ChipState.Normal else ChipState.Selected,
+                    state = calculateOtpState(otpState, textData[index]),
                     normal = normal,
-                    selected = selected
                     selected = selected,
                     verified = verified,
                     error = error
@@ -139,6 +139,23 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
     }
 }
 
+fun calculateOtpState(otpState: OTPState, text:String): ChipState {
+    return if(otpState == OTPState.Idle)
+    {
+        if(text.isEmpty()) ChipState.Normal else ChipState.Selected
+    }
+    else
+    {
+        if(otpState == OTPState.Success)
+        {
+            ChipState.Verified
+        }
+        else
+        {
+            ChipState.Error
+        }
+    }
+}
 
 
 @Preview
