@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -19,7 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.m2dstudio.otpman.controller.rememberShakeController
 import com.m2dstudio.otpman.dataModel.DataModelChip
+import com.m2dstudio.otpman.dataModel.ShakeConfig
+import com.m2dstudio.otpman.modifier.shake
 
 enum class ChipState{
     Normal,
@@ -29,6 +33,7 @@ enum class ChipState{
 }
 @Composable
 fun Chip(modifier: Modifier,
+         index:Int=0,
          str:String="",
          state: ChipState,
          normal:DataModelChip,
@@ -38,7 +43,26 @@ fun Chip(modifier: Modifier,
          )
 {
     val animationDuration = 250
+    val animationDelay = if(state == ChipState.Verified || state == ChipState.Error) index*50 else 0
+    val shakeConfig = when(state) {
+        ChipState.Normal -> ShakeConfig.none
+        ChipState.Selected -> ShakeConfig.none
+        ChipState.Verified -> if(animationType == AnimationType.Shake) ShakeConfig.success else ShakeConfig.none
+        ChipState.Error -> if(animationType == AnimationType.Shake) ShakeConfig.error else ShakeConfig.none
+    }
+    val shakeController = rememberShakeController().apply {
+        this.shake(shakeConfig)
+    }
 
+    val bottomPadding = animateIntAsState(
+        when(state) {
+            ChipState.Normal -> 0
+            ChipState.Selected -> 0
+            ChipState.Verified -> if(animationType == AnimationType.Normal) 24 else 0
+            ChipState.Error -> 0
+        }, label = "bottomPadding",
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
+    )
     val animatedBackColor = animateColorAsState(
         when(state){
             ChipState.Normal -> normal.backColor
@@ -46,7 +70,7 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.backColor
             ChipState.Error -> error.backColor
         }, label = "backColor",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedBorderColor = animateColorAsState(
@@ -56,7 +80,7 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.borderColor
             ChipState.Error -> error.borderColor
         }, label = "borderColor",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedBorderWidth = animateIntAsState(
@@ -66,7 +90,7 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.borderWidth
             ChipState.Error -> verified.borderWidth
         }, label = "borderWidth",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedCornerRadius = animateIntAsState(
@@ -76,7 +100,7 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.cornerRadius
             ChipState.Error -> verified.cornerRadius
         }, label = "cornerRadius",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedSize = animateIntAsState(
@@ -86,10 +110,11 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.size
             ChipState.Error -> error.size
         }, label = "size",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = index * 50)
     )
 
     Box(modifier = modifier
+        .padding(bottom = bottomPadding.value.dp)
         .size(animatedSize.value.dp)
         .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
         .background(animatedBackColor.value)
@@ -100,7 +125,9 @@ fun Chip(modifier: Modifier,
         ),
         contentAlignment = Alignment.Center
     ){
-        Text(text = str, style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp))
+        Text(
+            modifier = modifier.shake(shakeController),
+            text = str, style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp))
     }
 }
 

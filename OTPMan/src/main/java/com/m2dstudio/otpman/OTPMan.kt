@@ -34,9 +34,14 @@ enum class OTPState{
     Idle, Success, Failed
 }
 
+enum class AnimationType{
+    Normal, Shake
+}
+
 @Composable
 fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
            keyboardType: KeyboardType = KeyboardType.Number,
+           animationType: AnimationType = AnimationType.Normal,
            normal:DataModelChip = DataModelChip.normal(),
            selected:DataModelChip = DataModelChip.selected(),
            verified:DataModelChip = DataModelChip.verified(),
@@ -115,6 +120,8 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
         ) {
             items(count) { index ->
                 Chip(modifier = Modifier,
+                    index = index,
+                    animationType = animationType,
                     str = textData[index],
                     state = calculateOtpState(otpState, textData[index]),
                     normal = normal,
