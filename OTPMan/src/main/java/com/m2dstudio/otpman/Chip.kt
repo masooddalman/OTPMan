@@ -34,6 +34,7 @@ enum class ChipState{
 @Composable
 fun Chip(modifier: Modifier,
          index:Int=0,
+         animationType: AnimationType = AnimationType.Normal,
          str:String="",
          state: ChipState,
          normal:DataModelChip,
@@ -114,6 +115,7 @@ fun Chip(modifier: Modifier,
     )
 
     Box(modifier = modifier
+        .shake(shakeController)
         .padding(bottom = bottomPadding.value.dp)
         .size(animatedSize.value.dp)
         .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
