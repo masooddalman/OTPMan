@@ -34,6 +34,10 @@ enum class OTPState{
     Idle, Success, Failed
 }
 
+enum class AnimationType{
+    Normal, Shake
+}
+
 @Composable
 fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
            keyboardType: KeyboardType = KeyboardType.Number,
