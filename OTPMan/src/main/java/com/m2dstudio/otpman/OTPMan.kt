@@ -115,7 +115,6 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
         ) {
             items(count) { index ->
                 Chip(modifier = Modifier,
-                    index = index,
                     str = textData[index],
                     state = calculateOtpState(otpState, textData[index]),
                     normal = normal,
