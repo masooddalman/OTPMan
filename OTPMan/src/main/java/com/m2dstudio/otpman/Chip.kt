@@ -111,7 +111,7 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.size
             ChipState.Error -> error.size
         }, label = "size",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = index * 50)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     Box(modifier = modifier
