@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -29,6 +30,7 @@ enum class ChipState{
 }
 @Composable
 fun Chip(modifier: Modifier,
+         index:Int=0,
          str:String="",
          state: ChipState,
          normal:DataModelChip,
@@ -38,7 +40,16 @@ fun Chip(modifier: Modifier,
          )
 {
     val animationDuration = 250
-
+    val animationDelay = if(state == ChipState.Verified || state == ChipState.Error) index*50 else 0
+    val bottomPadding = animateIntAsState(
+        when(state) {
+            ChipState.Normal -> 0
+            ChipState.Selected -> 0
+            ChipState.Verified -> 24
+            ChipState.Error -> 0
+        }, label = "bottomPadding",
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
+    )
     val animatedBackColor = animateColorAsState(
         when(state){
             ChipState.Normal -> normal.backColor
@@ -46,7 +57,7 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.backColor
             ChipState.Error -> error.backColor
         }, label = "backColor",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedBorderColor = animateColorAsState(
@@ -56,7 +67,7 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.borderColor
             ChipState.Error -> error.borderColor
         }, label = "borderColor",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedBorderWidth = animateIntAsState(
@@ -66,7 +77,7 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.borderWidth
             ChipState.Error -> verified.borderWidth
         }, label = "borderWidth",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedCornerRadius = animateIntAsState(
@@ -76,7 +87,7 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.cornerRadius
             ChipState.Error -> verified.cornerRadius
         }, label = "cornerRadius",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedSize = animateIntAsState(
@@ -86,10 +97,11 @@ fun Chip(modifier: Modifier,
             ChipState.Verified -> verified.size
             ChipState.Error -> error.size
         }, label = "size",
-        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic)
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = index * 50)
     )
 
     Box(modifier = modifier
+        .padding(bottom = bottomPadding.value.dp)
         .size(animatedSize.value.dp)
         .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
         .background(animatedBackColor.value)
