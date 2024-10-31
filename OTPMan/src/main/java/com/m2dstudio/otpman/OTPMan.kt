@@ -12,10 +12,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.m2dstudio.otpman.dataModel.DataModelChip
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 enum class OTPState{
     Idle, Success, Failed
@@ -49,7 +53,8 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
            showRippleEffect:Boolean = false,
            otpState: OTPState = OTPState.Idle,
            onValueChange:(String)->Unit = {},
-           onComplete:(String)->Unit
+           onComplete:(String)->Unit,
+           onAnimationDone:(Boolean)-> Unit = {}
            )
 {
     val focusManager = LocalFocusManager.current
@@ -68,7 +73,21 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
             add("")
         }
     }
-
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(otpState != OTPState.Idle) {
+        coroutineScope.launch {
+            if(otpState == OTPState.Success)
+            {
+                delay(if(animationType == AnimationType.Shake) 1000 else (count * 50.toLong()) + 250)
+                onAnimationDone(true)
+            }
+            if(otpState == OTPState.Failed)
+            {
+                delay(if(animationType == AnimationType.Shake) 1000 else (count * 50.toLong()) + 250)
+                onAnimationDone(false)
+            }
+        }
+    }
 
     val interactionSource = remember { MutableInteractionSource() }
 
