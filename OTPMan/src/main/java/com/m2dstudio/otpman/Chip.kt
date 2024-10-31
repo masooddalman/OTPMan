@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,23 +65,43 @@ fun Chip(modifier: Modifier,
         }, label = "bottomPadding",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
+
     val animatedBackColor = animateColorAsState(
         when(state){
-            ChipState.Normal -> normal.backColor
-            ChipState.Selected -> selected.backColor
-            ChipState.Verified -> verified.backColor
-            ChipState.Error -> error.backColor
+            ChipState.Normal -> normal.backColor[0]
+            ChipState.Selected -> selected.backColor[0]
+            ChipState.Verified -> verified.backColor[0]
+            ChipState.Error -> error.backColor[0]
         }, label = "backColor",
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
+    )
+    val animatedBackColor2 = animateColorAsState(
+        when(state) {
+            ChipState.Normal -> normal.backColor[ if(normal.backColor.size > 1) 1 else 0]
+            ChipState.Selected -> selected.backColor[ if(selected.backColor.size > 1) 1 else 0]
+            ChipState.Verified -> verified.backColor[ if(verified.backColor.size > 1) 1 else 0]
+            ChipState.Error -> error.backColor[ if(error.backColor.size > 1) 1 else 0]
+        }, label = "backColor2",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedBorderColor = animateColorAsState(
         when(state){
-            ChipState.Normal -> normal.borderColor
-            ChipState.Selected -> selected.borderColor
-            ChipState.Verified -> verified.borderColor
-            ChipState.Error -> error.borderColor
+            ChipState.Normal -> normal.borderColor[0]
+            ChipState.Selected -> selected.borderColor[0]
+            ChipState.Verified -> verified.borderColor[0]
+            ChipState.Error -> error.borderColor[0]
         }, label = "borderColor",
+        animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
+    )
+
+    val animatedBorderColor2 = animateColorAsState(
+        when(state) {
+            ChipState.Normal -> normal.borderColor[ if(normal.borderColor.size > 1) 1 else 0]
+            ChipState.Selected -> selected.borderColor[ if(selected.borderColor.size > 1) 1 else 0]
+            ChipState.Verified -> verified.borderColor[ if(verified.borderColor.size > 1) 1 else 0]
+            ChipState.Error -> error.borderColor[ if(error.borderColor.size > 1) 1 else 0]
+        }, label = "borderColor2",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
@@ -119,10 +140,10 @@ fun Chip(modifier: Modifier,
         .padding(bottom = bottomPadding.value.dp)
         .size(animatedSize.value.dp)
         .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
-        .background(animatedBackColor.value)
+        .background(brush = Brush.linearGradient(listOf(animatedBackColor.value, animatedBackColor2.value)))
         .border(
             width = animatedBorderWidth.value.dp,
-            color = animatedBorderColor.value,
+            brush = Brush.horizontalGradient(listOf(animatedBorderColor.value, animatedBorderColor2.value)),
             shape = RoundedCornerShape(animatedCornerRadius.value.dp)
         ),
         contentAlignment = Alignment.Center
