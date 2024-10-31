@@ -137,6 +137,13 @@ fun Chip(modifier: Modifier,
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
+    val textStyle = when(state) {
+        ChipState.Normal -> normal.textStyle
+        ChipState.Selected -> selected.textStyle
+        ChipState.Verified -> verified.textStyle
+        ChipState.Error -> error.textStyle
+    }
+
     Box(modifier = modifier
         .shake(shakeController)
         .padding(bottom = bottomPadding.value.dp)
@@ -152,7 +159,7 @@ fun Chip(modifier: Modifier,
     ){
         Text(
             modifier = modifier.shake(shakeController),
-            text = str, style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp))
+            text = str, style = textStyle)
     }
 }
 
