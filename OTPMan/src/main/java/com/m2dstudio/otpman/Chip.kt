@@ -25,6 +25,8 @@ import com.m2dstudio.otpman.controller.rememberShakeController
 import com.m2dstudio.otpman.dataModel.DataModelChip
 import com.m2dstudio.otpman.dataModel.ShakeConfig
 import com.m2dstudio.otpman.modifier.shake
+import com.m2dstudio.otpman.extensions.getFistColor
+import com.m2dstudio.otpman.extensions.getSecondaryColor
 
 enum class ChipState{
     Normal,
@@ -68,39 +70,39 @@ fun Chip(modifier: Modifier,
 
     val animatedBackColor = animateColorAsState(
         when(state){
-            ChipState.Normal -> normal.backColor[0]
-            ChipState.Selected -> selected.backColor[0]
-            ChipState.Verified -> verified.backColor[0]
-            ChipState.Error -> error.backColor[0]
+            ChipState.Normal -> normal.backColor.getFistColor()
+            ChipState.Selected -> selected.backColor.getFistColor()
+            ChipState.Verified -> verified.backColor.getFistColor()
+            ChipState.Error -> error.backColor.getFistColor()
         }, label = "backColor",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
     val animatedBackColor2 = animateColorAsState(
         when(state) {
-            ChipState.Normal -> normal.backColor[ if(normal.backColor.size > 1) 1 else 0]
-            ChipState.Selected -> selected.backColor[ if(selected.backColor.size > 1) 1 else 0]
-            ChipState.Verified -> verified.backColor[ if(verified.backColor.size > 1) 1 else 0]
-            ChipState.Error -> error.backColor[ if(error.backColor.size > 1) 1 else 0]
+            ChipState.Normal -> normal.backColor.getSecondaryColor()
+            ChipState.Selected -> selected.backColor.getSecondaryColor()
+            ChipState.Verified -> verified.backColor.getSecondaryColor()
+            ChipState.Error -> error.backColor.getSecondaryColor()
         }, label = "backColor2",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedBorderColor = animateColorAsState(
         when(state){
-            ChipState.Normal -> normal.borderColor[0]
-            ChipState.Selected -> selected.borderColor[0]
-            ChipState.Verified -> verified.borderColor[0]
-            ChipState.Error -> error.borderColor[0]
+            ChipState.Normal -> normal.borderColor.getFistColor()
+            ChipState.Selected -> selected.borderColor.getFistColor()
+            ChipState.Verified -> verified.borderColor.getFistColor()
+            ChipState.Error -> error.borderColor.getFistColor()
         }, label = "borderColor",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
 
     val animatedBorderColor2 = animateColorAsState(
         when(state) {
-            ChipState.Normal -> normal.borderColor[ if(normal.borderColor.size > 1) 1 else 0]
-            ChipState.Selected -> selected.borderColor[ if(selected.borderColor.size > 1) 1 else 0]
-            ChipState.Verified -> verified.borderColor[ if(verified.borderColor.size > 1) 1 else 0]
-            ChipState.Error -> error.borderColor[ if(error.borderColor.size > 1) 1 else 0]
+            ChipState.Normal -> normal.borderColor.getSecondaryColor()
+            ChipState.Selected -> selected.borderColor.getSecondaryColor()
+            ChipState.Verified -> verified.borderColor.getSecondaryColor()
+            ChipState.Error -> error.borderColor.getSecondaryColor()
         }, label = "borderColor2",
         animationSpec = tween(durationMillis = animationDuration, easing = EaseInOutCubic, delayMillis = animationDelay)
     )
