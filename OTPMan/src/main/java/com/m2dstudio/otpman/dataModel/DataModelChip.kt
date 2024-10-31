@@ -10,6 +10,7 @@ data class DataModelChip(
     val size: Int,
     val backColor: List<Color>,
     val borderColor: List<Color>,
+    val angle:Float = 0f,
     val borderWidth: Int,
     val cornerRadius: Int,
     val textStyle: TextStyle = TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp)
