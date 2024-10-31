@@ -16,17 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.m2dstudio.otpman.controller.rememberShakeController
 import com.m2dstudio.otpman.dataModel.DataModelChip
 import com.m2dstudio.otpman.dataModel.ShakeConfig
-import com.m2dstudio.otpman.modifier.shake
 import com.m2dstudio.otpman.extensions.getFirstColor
 import com.m2dstudio.otpman.extensions.getSecondColor
+import com.m2dstudio.otpman.modifier.shake
+import com.m2dstudio.otpman.utils.getGradientCoordinates
 
 enum class ChipState{
     Normal,
@@ -144,15 +142,39 @@ fun Chip(modifier: Modifier,
         ChipState.Error -> error.textStyle
     }
 
+    val angle = when(state) {
+        ChipState.Normal -> normal.angle
+        ChipState.Selected -> selected.angle
+        ChipState.Verified -> verified.angle
+        ChipState.Error -> error.angle
+    }
+
+    val normalizedAngle: Float = (angle % 360 + 360) % 360
+    val angleInRadians: Float = Math.toRadians(normalizedAngle.toDouble()).toFloat()
+    val (start, end) = getGradientCoordinates(
+        chipSize = animatedSize.value,
+        normalizedAngle = normalizedAngle,
+        angleInRadians = angleInRadians)
+
     Box(modifier = modifier
         .shake(shakeController)
         .padding(bottom = bottomPadding.value.dp)
         .size(animatedSize.value.dp)
         .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
-        .background(brush = Brush.linearGradient(listOf(animatedBackColor.value, animatedBackColor2.value)))
+        .background(
+            brush = Brush.linearGradient(
+                colors = listOf(animatedBackColor.value, animatedBackColor2.value),
+                start = start,
+                end = end
+            )
+        )
         .border(
             width = animatedBorderWidth.value.dp,
-            brush = Brush.horizontalGradient(listOf(animatedBorderColor.value, animatedBorderColor2.value)),
+            brush = Brush.linearGradient(
+                colors = listOf(animatedBorderColor.value, animatedBorderColor2.value),
+                start = start,
+                end = end
+            ),
             shape = RoundedCornerShape(animatedCornerRadius.value.dp)
         ),
         contentAlignment = Alignment.Center
@@ -171,7 +193,7 @@ fun SampleShapePreview()
     Chip(modifier = Modifier,
         str = "5",
         state = ChipState.Normal,
-        normal = DataModelChip.normal(),
+        normal = DataModelChip.normalGradient(),
         selected = DataModelChip.selected(),
         verified = DataModelChip.verified(),
         error = DataModelChip.error()
