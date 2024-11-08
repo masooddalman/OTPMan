@@ -38,15 +38,19 @@ data class DataModelChip(
 
         fun verifiedGradient() = DataModelChip(
             size = 50,
-            backColor = listOf(Color.LightGray, Color.Green),
-            borderColor = listOf(Color.Green, Color.Green),
-            borderWidth = 4, cornerRadius = 20)
+            backColor = Gradients.harvey(),
+            borderColor = Gradients.transparent(),
+            borderWidth = 4, cornerRadius = 20,
+            textStyle = TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color.White)
+        )
 
         fun errorGradient() = DataModelChip(
             size = 50,
-            backColor = listOf(Color.Red.copy(alpha = 0.25f), Color.Red),
-            borderColor = listOf(Color.Red, Color.Red),
-            borderWidth = 4, cornerRadius = 16)
+            backColor = Gradients.flair(),
+            borderColor = Gradients.transparent(),
+            borderWidth = 4, cornerRadius = 16,
+            textStyle =  TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color.White)
+        )
 
     }
 }
