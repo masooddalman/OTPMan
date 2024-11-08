@@ -152,7 +152,7 @@ fun Chip(modifier: Modifier,
     val normalizedAngle: Float = (angle % 360 + 360) % 360
     val angleInRadians: Float = Math.toRadians(normalizedAngle.toDouble()).toFloat()
     val (start, end) = getGradientCoordinates(
-        chipSize = animatedSize.value,
+        chipSize = animatedSize.value*2,
         normalizedAngle = normalizedAngle,
         angleInRadians = angleInRadians)
 
