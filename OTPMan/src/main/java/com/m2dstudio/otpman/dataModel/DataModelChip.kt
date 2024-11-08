@@ -1,10 +1,10 @@
 package com.m2dstudio.otpman.dataModel
 
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.m2dstudio.otpman.gradients.Gradients
 
 data class DataModelChip(
     val size: Int,
@@ -24,15 +24,17 @@ data class DataModelChip(
 
         fun normalGradient() = DataModelChip(
             size = 50,
-            backColor = listOf(Color.Gray, Color.LightGray),
-            borderColor = listOf(Color.Transparent, Color.Transparent),
+            backColor = Gradients.gradeGray(0.5f),
+            borderColor = Gradients.transparent(),
+            angle = -90f,
             borderWidth = 0, cornerRadius = 8)
 
         fun selectedGradient() = DataModelChip(
             size = 50,
-            backColor = listOf(Color.LightGray, Color.Cyan),
-            borderColor = listOf(Color.Cyan, Color.Cyan),
-            borderWidth = 2, cornerRadius = 16)
+            backColor = Gradients.piggyPink(0.5f),
+            borderColor = Gradients.transparent(),
+            angle = 90f,
+            borderWidth = 0, cornerRadius = 8)
 
         fun verifiedGradient() = DataModelChip(
             size = 50,
