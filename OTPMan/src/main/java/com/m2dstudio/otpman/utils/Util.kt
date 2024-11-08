@@ -28,8 +28,15 @@ fun getGradientCoordinates(chipSize:Int, normalizedAngle: Float, angleInRadians:
     val horizontalOffset = halfGradientLine * cos(angleInRadians)
     val verticalOffset = halfGradientLine * sin(angleInRadians)
 
-    val start = size.center + Offset(-horizontalOffset, verticalOffset)
-    val end = size.center + Offset(horizontalOffset, -verticalOffset)
+    //Add bounds checking for final coordinates
+    //The final coordinate calculations should ensure the points remain within the chip bounds to prevent gradient artifacts
+    fun clampOffset(offset: Offset, bounds: Size): Offset = Offset(
+        x = offset.x.coerceIn(0f, bounds.width),
+        y = offset.y.coerceIn(0f, bounds.height)
+    )
+
+    val start = clampOffset(size.center + Offset(-horizontalOffset, verticalOffset), size)
+    val end = clampOffset(size.center + Offset(horizontalOffset, -verticalOffset), size)
 
     return start to end
 }
