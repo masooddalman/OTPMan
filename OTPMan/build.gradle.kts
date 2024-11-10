@@ -52,5 +52,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    //play service auth for reading otp code without permission using app hash key
+    api(libs.play.services.auth)
+    api(libs.play.services.auth.api.phone)
     debugImplementation(libs.ui.tooling)
 }

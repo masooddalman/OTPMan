@@ -25,11 +25,16 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.phone.SmsRetriever
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.common.api.Status
 import com.m2dstudio.otpman.dataModel.DataModelChip
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,7 +64,7 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
 {
     val focusManager = LocalFocusManager.current
     var value by remember {
-        mutableStateOf("")
+        mutableStateOf(TextFieldValue(""))
     }
     val focus by remember {
         mutableStateOf(FocusRequester())
@@ -73,6 +78,29 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
             add("")
         }
     }
+    // Broadcast
+    SmsListener { intent ->
+        if (intent?.action == SmsRetriever.SMS_RETRIEVED_ACTION) {
+
+            val extras = intent.extras
+            val status = extras?.get(SmsRetriever.EXTRA_STATUS) as? Status
+            if (status?.statusCode == CommonStatusCodes.SUCCESS) {
+                val message = extras.getString(SmsRetriever.EXTRA_SMS_MESSAGE, "")
+
+                val otpReceived = Regex("[0-9]{$count}").find(message)?.value
+                otpReceived?.let {
+                    value = TextFieldValue(otpReceived, selection = TextRange(otpReceived.length))
+                    textData.clear()
+                    for (i in 0 until count) {
+                        textData.add(otpReceived[i].toString())
+                    }
+                    onValueChange(otpReceived)
+                    onComplete(otpReceived)
+                }
+            }
+        }
+    }
+    //UI
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(otpState != OTPState.Idle) {
         coroutineScope.launch {
@@ -96,27 +124,27 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
             modifier = Modifier
                 .focusRequester(focus),
             value = value, onValueChange = {
-                if (it.length <= count)
+                if (it.text.length <= count)
                 {
                     value = it
 
                     for(i in 0 until count)
                     {
-                        if(i < value.length)
+                        if(i < value.text.length)
                         {
-                            textData[i] = value[i].toString()
+                            textData[i] = value.text[i].toString()
                         }
                         else
                         {
                             textData[i] = ""
                         }
-                        onValueChange(value)
+                        onValueChange(value.text)
                     }
                 }
-                if (it.length >= count)
+                if (it.text.length >= count)
                 {
                     focusManager.clearFocus()
-                    onComplete(value)
+                    onComplete(value.text)
                 }
         },
             singleLine = true,
