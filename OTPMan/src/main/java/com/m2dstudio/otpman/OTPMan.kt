@@ -25,8 +25,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,7 +61,7 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
 {
     val focusManager = LocalFocusManager.current
     var value by remember {
-        mutableStateOf("")
+        mutableStateOf(TextFieldValue(""))
     }
     val focus by remember {
         mutableStateOf(FocusRequester())
@@ -96,27 +98,27 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
             modifier = Modifier
                 .focusRequester(focus),
             value = value, onValueChange = {
-                if (it.length <= count)
+                if (it.text.length <= count)
                 {
                     value = it
 
                     for(i in 0 until count)
                     {
-                        if(i < value.length)
+                        if(i < value.text.length)
                         {
-                            textData[i] = value[i].toString()
+                            textData[i] = value.text[i].toString()
                         }
                         else
                         {
                             textData[i] = ""
                         }
-                        onValueChange(value)
+                        onValueChange(value.text)
                     }
                 }
-                if (it.length >= count)
+                if (it.text.length >= count)
                 {
                     focusManager.clearFocus()
-                    onComplete(value)
+                    onComplete(value.text)
                 }
         },
             singleLine = true,
