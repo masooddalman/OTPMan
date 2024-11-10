@@ -1,5 +1,6 @@
 package com.m2dstudio.otpman.utils
 
+import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
@@ -11,6 +12,17 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+const val TAG = "OTPMan"
+private fun print(message:String,error:Boolean=false){
+    if(error)
+    {
+        Log.e(TAG,"❌$message")
+    }
+    else
+    {
+        Log.d(TAG,"✅$message")
+    }
+}
 fun getGradientCoordinates(chipSize:Int, normalizedAngle: Float, angleInRadians:Float): Pair<Offset, Offset> {
     val size = Size(chipSize*2f, chipSize*2f)
     val diagonal = sqrt(size.width.pow(2) + size.height.pow(2))
