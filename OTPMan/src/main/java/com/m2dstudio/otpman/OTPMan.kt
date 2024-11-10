@@ -32,6 +32,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.phone.SmsRetriever
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.common.api.Status
 import com.m2dstudio.otpman.dataModel.DataModelChip
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -75,6 +78,29 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
             add("")
         }
     }
+    // Broadcast
+    SmsListener { intent ->
+        if (intent?.action == SmsRetriever.SMS_RETRIEVED_ACTION) {
+
+            val extras = intent.extras
+            val status = extras?.get(SmsRetriever.EXTRA_STATUS) as? Status
+            if (status?.statusCode == CommonStatusCodes.SUCCESS) {
+                val message = extras.getString(SmsRetriever.EXTRA_SMS_MESSAGE, "")
+
+                val otpReceived = Regex("[0-9]{$count}").find(message)?.value
+                otpReceived?.let {
+                    value = TextFieldValue(otpReceived, selection = TextRange(otpReceived.length))
+                    textData.clear()
+                    for (i in 0 until count) {
+                        textData.add(otpReceived[i].toString())
+                    }
+                    onValueChange(otpReceived)
+                    onComplete(otpReceived)
+                }
+            }
+        }
+    }
+    //UI
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(otpState != OTPState.Idle) {
         coroutineScope.launch {
