@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     //play service auth for reading otp code without permission using app hash key
-    api(libs.play.services.auth)
-    api(libs.play.services.auth.api.phone)
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("com.google.android.gms:play-services-auth-api-phone:18.1.0")
     debugImplementation(libs.ui.tooling)
 }
