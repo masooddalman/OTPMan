@@ -14,28 +14,23 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
-import com.m2dstudio.otpman.dataModel.DataModelChip
+import com.m2dstudio.otpman.viewModel.OTPManViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -48,36 +43,21 @@ enum class AnimationType{
 }
 
 @Composable
-fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
-           keyboardType: KeyboardType = KeyboardType.Number,
-           animationType: AnimationType = AnimationType.Normal,
-           normal:DataModelChip = DataModelChip.normalGradient(),
-           selected:DataModelChip = DataModelChip.selectedGradient(),
-           verified:DataModelChip = DataModelChip.verifiedGradient(),
-           error:DataModelChip = DataModelChip.errorGradient(),
+fun OTPMan(modifier: Modifier,
+           space:Int = 8,
            showRippleEffect:Boolean = false,
-           otpState: OTPState = OTPState.Idle,
+           viewModel: OTPManViewModel,
            onValueChange:(String)->Unit = {},
            onComplete:(String)->Unit,
            onAnimationDone:(Boolean)-> Unit = {}
            )
 {
     val focusManager = LocalFocusManager.current
-    var value by remember {
-        mutableStateOf(TextFieldValue(""))
-    }
+
     val focus by remember {
         mutableStateOf(FocusRequester())
     }
 
-    val textData = remember {
-        mutableStateListOf<String>()
-    }.apply {
-        for(i in 0 until count)
-        {
-            add("")
-        }
-    }
     // Broadcast
     SmsListener { intent ->
         if (intent?.action == SmsRetriever.SMS_RETRIEVED_ACTION) {
@@ -86,14 +66,10 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
             val status = extras?.get(SmsRetriever.EXTRA_STATUS) as? Status
             if (status?.statusCode == CommonStatusCodes.SUCCESS) {
                 val message = extras.getString(SmsRetriever.EXTRA_SMS_MESSAGE, "")
-
-                val otpReceived = Regex("[0-9]{$count}").find(message)?.value
+                val otpReceived = Regex("[0-9]{${viewModel.count}}").find(message)?.value
                 otpReceived?.let {
-                    value = TextFieldValue(otpReceived, selection = TextRange(otpReceived.length))
-                    textData.clear()
-                    for (i in 0 until count) {
-                        textData.add(otpReceived[i].toString())
-                    }
+                    viewModel.updateValue(otpReceived)
+                    viewModel.refreshTextData(otpReceived)
                     onValueChange(otpReceived)
                     onComplete(otpReceived)
                 }
@@ -102,16 +78,16 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
     }
     //UI
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(otpState != OTPState.Idle) {
+    LaunchedEffect(viewModel.state != OTPState.Idle) {
         coroutineScope.launch {
-            if(otpState == OTPState.Success)
+            if(viewModel.state == OTPState.Success)
             {
-                delay(if(animationType == AnimationType.Shake) 1000 else (count * 50.toLong()) + 250)
+                delay(if(viewModel.animationType == AnimationType.Shake) 1000 else (viewModel.count * 50.toLong()) + 250)
                 onAnimationDone(true)
             }
-            if(otpState == OTPState.Failed)
+            if(viewModel.state == OTPState.Failed)
             {
-                delay(if(animationType == AnimationType.Shake) 1000 else (count * 50.toLong()) + 250)
+                delay(if(viewModel.animationType == AnimationType.Shake) 1000 else (viewModel.count * 50.toLong()) + 250)
                 onAnimationDone(false)
             }
         }
@@ -123,33 +99,17 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
         TextField(
             modifier = Modifier
                 .focusRequester(focus),
-            value = value, onValueChange = {
-                if (it.text.length <= count)
-                {
-                    value = it
-
-                    for(i in 0 until count)
-                    {
-                        if(i < value.text.length)
-                        {
-                            textData[i] = value.text[i].toString()
-                        }
-                        else
-                        {
-                            textData[i] = ""
-                        }
-                        onValueChange(value.text)
-                    }
-                }
-                if (it.text.length >= count)
-                {
+            value = viewModel.getValue(), onValueChange = {
+                viewModel.updateValue(it, lessEqual = { newVal ->
+                    onValueChange.invoke(newVal)
+                }, bigger = { inputCode ->
+                    onComplete(inputCode)
                     focusManager.clearFocus()
-                    onComplete(value.text)
-                }
+                })
         },
             singleLine = true,
             textStyle = TextStyle(fontSize = 1.sp, color = Color.Transparent),
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            keyboardOptions = KeyboardOptions(keyboardType = viewModel.keyboardType),
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
@@ -165,23 +125,23 @@ fun OTPMan(modifier: Modifier, count: Int, space:Int = 8,
             horizontalArrangement = Arrangement.spacedBy(space.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            items(count) { index ->
+            items(viewModel.count) { index ->
                 Chip(modifier = Modifier,
                     index = index,
-                    animationType = animationType,
-                    str = textData[index],
-                    state = calculateOtpState(otpState, textData[index]),
-                    normal = normal,
-                    selected = selected,
-                    verified = verified,
-                    error = error
+                    animationType = viewModel.animationType,
+                    str = viewModel.textData[index],
+                    state = calculateOtpState(viewModel.state, viewModel.textData[index]),
+                    normal = viewModel.normal,
+                    selected = viewModel.selected,
+                    verified = viewModel.verified,
+                    error = viewModel.error
                 )
             }
         }
         Box(
             modifier
                 .fillMaxWidth()
-                .height(normal.size.dp)
+                .height(viewModel.normal.size.dp)
                 .clickable(
                     interactionSource = interactionSource,
                     indication = if (showRippleEffect) LocalIndication.current else null
@@ -216,7 +176,5 @@ fun calculateOtpState(otpState: OTPState, text:String): ChipState {
 @Composable
 fun OTPManPreview()
 {
-    OTPMan(modifier = Modifier, count = 4, onComplete = {
-
-    })
+    OTPMan(modifier = Modifier, viewModel = OTPManViewModel(count = 5), onComplete = {})
 }
