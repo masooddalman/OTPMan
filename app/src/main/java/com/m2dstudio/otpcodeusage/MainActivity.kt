@@ -1,6 +1,7 @@
 package com.m2dstudio.otpcodeusage
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,7 +37,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private var otpState = mutableStateOf(OTPState.Idle)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -52,27 +52,26 @@ class MainActivity : ComponentActivity() {
                             .padding(horizontal = 24.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,) {
-                        OTPMan(modifier = Modifier, count = 5,
-                            animationType = AnimationType.Shake,
-                            otpState = otpState.value,
+                        OTPMan(modifier = Modifier,
+                            viewModel = otpManViewModel,
                             onValueChange = {
-                                otpState.value = OTPState.Idle
+                                Log.v("MainActivity", "onValueChanged -> $it")
                             },
                             onComplete = {
-                            println("input code is $it")
+                                Log.v("MainActivity", "input code is $it")
                         },
                             onAnimationDone = {
-                                println("animation done $it")
+                                Log.v("MainActivity", "animation done $it")
                             })
                         Spacer(modifier = Modifier.padding(16.dp))
                         Button(onClick = {
-                            otpState.value = OTPState.Success
+                            otpManViewModel.updateToSuccessState()
                         }) {
                             Text(text = "send otp code to server and success")
                         }
 
                         Button(onClick = {
-                            otpState.value = OTPState.Failed
+                            otpManViewModel.updateToFailedState()
                         }) {
                             Text(text = "send otp code to server and failed")
                         }
@@ -97,7 +96,7 @@ fun MainActivityPreview() {
                     .padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,) {
-                OTPMan(modifier = Modifier, count = 5, onComplete = {})
+                OTPMan(modifier = Modifier, viewModel = OTPManViewModel(count = 5), onComplete = {})
             }
         }
     }
