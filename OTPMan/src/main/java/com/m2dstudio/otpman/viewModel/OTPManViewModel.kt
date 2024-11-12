@@ -39,8 +39,22 @@ class OTPManViewModel(
         return value.value
     }
 
-    fun updateOTPState(otpState: OTPState) {
+    private fun updateOTPState(otpState: OTPState) {
         state = otpState
+    }
+
+    fun updateToSuccessState()
+    {
+        if(getValue().text.length == count) {
+            updateOTPState(OTPState.Success)
+        }
+    }
+
+    fun updateToFailedState()
+    {
+        if(getValue().text.length == count) {
+            updateOTPState(OTPState.Failed)
+        }
     }
 
     fun updateValue(str: String) {
@@ -61,6 +75,7 @@ class OTPManViewModel(
                     textData[i] = ""
                 }
             }
+            updateOTPState(OTPState.Idle)
             lessEqual.invoke(value.value.text)
         }
         if (newValue.text.length >= count) {
