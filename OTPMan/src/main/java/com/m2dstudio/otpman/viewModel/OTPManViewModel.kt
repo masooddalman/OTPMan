@@ -43,14 +43,14 @@ class OTPManViewModel(
         state = otpState
     }
 
-    fun updateToSuccessState()
+    fun makeItSuccess()
     {
         if(getValue().text.length == count) {
             updateOTPState(OTPState.Success)
         }
     }
 
-    fun updateToFailedState()
+    fun makeItFailed()
     {
         if(getValue().text.length == count) {
             updateOTPState(OTPState.Failed)
