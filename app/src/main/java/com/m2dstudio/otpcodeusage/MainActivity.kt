@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,6 +31,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.m2dstudio.otpcodeusage.ui.theme.OTPCodeUsageTheme
 import com.m2dstudio.otpman.OTPMan
 import com.m2dstudio.otpman.OTPManCountDown
+import com.m2dstudio.otpman.utils.generateAppHashKey
 import com.m2dstudio.otpman.viewModel.OTPManViewModel
 
 class MainActivity : ComponentActivity() {
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return OTPManViewModel(
-                    count = 5
+                    count = 5,
                 ) as T
             }
         }
@@ -48,6 +49,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        generateAppHashKey(this)
 
         setContent {
             OTPCodeUsageTheme {
@@ -72,28 +74,16 @@ class MainActivity : ComponentActivity() {
                             })
                         Spacer(modifier = Modifier.padding(16.dp))
                         Button(onClick = {
-                            otpManViewModel.updateToSuccessState()
+                            otpManViewModel.makeItSuccess()
                         }) {
-                            Text(text = "send otp code to server and success")
+                            Text(text = "make it success")
                         }
 
                         Button(onClick = {
-                            otpManViewModel.updateToFailedState()
+                            otpManViewModel.makeItFailed()
                         }) {
-                            Text(text = "send otp code to server and failed")
+                            Text(text = "make it failed")
                         }
-                        OTPManCountDown(
-                            secondsInFuture = 10,
-                            onTick = {
-                                Log.v("MainActivity", "onTick")
-                            },
-                            onFinished = {
-                                Log.v("MainActivity", "onFinished")
-                            },
-                            onResend = {
-                                Log.v("MainActivity", "onResend")
-                            }
-                        )
 
                     }
 
@@ -116,16 +106,6 @@ fun MainActivityPreview() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,) {
                 OTPMan(modifier = Modifier, viewModel = OTPManViewModel(count = 5), onComplete = {})
-                OTPManCountDown(
-                    secondsInFuture = 600,
-                    resendContent = {
-                            Icon(
-                                imageVector = Icons.Outlined.Refresh,
-                                contentDescription = null
-                            )
-                            Text(text = "Resend")
-                    }
-                    , textStyle = TextStyle(fontSize = 24.sp, color = Color.Cyan, fontWeight = FontWeight.Bold))
             }
         }
     }
