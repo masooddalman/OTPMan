@@ -18,9 +18,9 @@
 ```gradle
 maven { url = uri("https://jitpack.io") }
 ```
-2: add it to your app's `build.gradle.kts` dependencies
+2: add it to your app's `build.gradle.kts` dependencies _(take the latest release version from the release section at the right)_
 ```gradle
-implementation("com.github.masooddalman:OTPMan:0.0.1")
+implementation("com.github.masooddalman:OTPMan:latest_release_version")
 ```
 3: sync it 😁
 ## Usage (simple)
