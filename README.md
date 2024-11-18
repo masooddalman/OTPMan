@@ -1,5 +1,3 @@
-
-
 # OTPMan
 
 ![Kotlin](https://img.shields.io/badge/language-Kotlin-blue) ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-UI%20Framework-green) ![Android](https://img.shields.io/badge/Platform-Android-orange)
@@ -169,7 +167,7 @@ The library comes with a class named Gradients which has different type of gradi
 ```
  Gradients.gradeGray
 ```
-or if you need to add opacity to these gradients simple use like below (e.g. 50% opacity) :
+or if you need to add opacity to these gradients, use it like below (e.g. 50% opacity) :
 ```
 Gradients.gradeGray(0.5f)
 ```
@@ -187,3 +185,26 @@ Gradients.gradeGray(0.5f)
    done
  - `onComplete` : it triggers when the code completely filled, either by
    the user or auto-reading from the SMS
+
+
+## Count-Down
+Every screen with verification code input needs a count-down timer.
+you can use **OTPManCountDown composable** in the app's UI like below:
+
+    OTPManCountDown()
+the configuration will be:
+
+ - `secondsInFuture`: timer in seconds (default : 120 seconds)
+ - `mode`: count-down 3 different formats (default: Minute)
+
+  | Seconds | Minutes | MinutesThenSeconds |
+|--------|--------|--------|
+| ![seconds mode](https://github.com/masooddalman/OTPMan/blob/main/assets/sec.gif) | ![minutes mode](https://github.com/masooddalman/OTPMan/blob/main/assets/min.gif) | ![minutesThenSeconds mode](https://github.com/masooddalman/OTPMan/blob/main/assets/minsec.gif) |
+
+ - `prefixContent`: a String to show **before** the count-down
+ - `postFixContent`: a String to show **after** the count-down
+ - `textStyle`: style of the count-down
+ - `onFinished`: it triggers when the count-down is finished
+ - `onTick`: it triggers on each second
+ - `onResend`: it triggers when the user interacts with the Resend button
+ - `resendContent`: the content of resend button
