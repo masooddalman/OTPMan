@@ -26,7 +26,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-public enum class CountDownMode{
+enum class CountDownMode{
     Seconds, Minutes, MinutesThenSeconds
 }
 
@@ -105,18 +105,14 @@ private fun makeMinutesString(duration: Duration) : String {
     val m = (duration - h.hours).inWholeMinutes
     val s = (duration - h.hours - m.minutes).inWholeSeconds
 
-    var hours=""
-    var minutes=""
-    var secs=""
-
-    hours = if(h.toInt() == 0) { "" }
+    val hours: String = if(h.toInt() == 0) { "" }
     else if(h.toInt() < 10) { "0$h:" }
     else { "${h.toInt()}:" }
 
-    minutes = if(m.toInt() < 10) { "0$m:" }
+    val minutes: String = if(m.toInt() < 10) { "0$m:" }
     else { "$m:" }
 
-    secs = if(s.toInt() < 10) { "0$s" }
+    val secs: String = if(s.toInt() < 10) { "0$s" }
     else { "$s" }
 
     return "$hours$minutes$secs"
