@@ -35,6 +35,8 @@ fun OTPManCountDown(
     modifier: Modifier=Modifier,
     secondsInFuture: Int = 120,
     mode: CountDownMode = CountDownMode.Minutes,
+    prefixContent:String? = "",
+    postFixContent:String? = "",
     textStyle: TextStyle = TextStyle(),
     onFinished: (() -> Unit)? = null,
     onTick: (() -> Unit)? = null,
@@ -67,7 +69,7 @@ fun OTPManCountDown(
         contentAlignment = Alignment.Center
     ){
         if(isRunning || resendContent == null) {
-            Text(text = makeString(mode, timeLeft), modifier = modifier, style = textStyle)
+                Text(text = "$prefixContent ${makeString(mode, timeLeft)} $postFixContent", modifier = modifier, style = textStyle)
         }
         else {
             Row(content = resendContent,
