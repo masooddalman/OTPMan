@@ -190,9 +190,23 @@ fun Chip(modifier: Modifier,
                 shape = RoundedCornerShape(animatedCornerRadius.value.dp)
             )
         )
-        Text(
-            modifier = modifier.shake(shakeController),
-            text = str, style = textStyle)
+        if(inputAnimationSpec == null)
+        {
+            Text(
+                modifier = modifier.shake(shakeController),
+                text = str, style = textStyle)
+        }
+        else
+        {
+            AnimatedContent(targetState = str, label = "chip text",
+                transitionSpec = inputAnimationSpec
+            ) { str ->
+                Text(
+                    modifier = modifier.shake(shakeController),
+                    text = str, style = textStyle)
+            }
+        }
+
     }
 }
 
