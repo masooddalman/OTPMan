@@ -1,5 +1,7 @@
 package com.m2dstudio.otpman
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -50,6 +52,7 @@ enum class ChipMode {
 fun OTPMan(modifier: Modifier,
            space:Int = 8,
            showRippleEffect:Boolean = false,
+           inputAnimationSpec: (AnimatedContentTransitionScope<String>.() -> ContentTransform)? = null,
            viewModel: OTPManViewModel,
            onValueChange:(String)->Unit = {},
            onComplete:(String)->Unit,
@@ -130,7 +133,8 @@ fun OTPMan(modifier: Modifier,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             items(viewModel.count) { index ->
-                Chip(modifier = Modifier,
+                Chip(
+                    modifier = Modifier,
                     index = index,
                     animationType = viewModel.animationType,
                     str = viewModel.textData[index],
@@ -139,7 +143,8 @@ fun OTPMan(modifier: Modifier,
                     selected = viewModel.selected,
                     verified = viewModel.verified,
                     error = viewModel.error,
-                    mode = viewModel.mode
+                    mode = viewModel.mode,
+                    inputAnimationSpec = inputAnimationSpec
                 )
             }
         }
