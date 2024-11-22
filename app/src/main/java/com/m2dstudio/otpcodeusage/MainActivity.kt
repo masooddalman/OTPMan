@@ -27,6 +27,7 @@ import com.m2dstudio.otpman.ChipMode
 import com.m2dstudio.otpman.CountDownMode
 import com.m2dstudio.otpman.OTPMan
 import com.m2dstudio.otpman.OTPManCountDown
+import com.m2dstudio.otpman.animations.InputAnimations
 import com.m2dstudio.otpman.utils.generateAppHashKey
 import com.m2dstudio.otpman.viewModel.OTPManViewModel
 
@@ -60,6 +61,7 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,) {
                         OTPMan(modifier = Modifier,
+                            inputAnimationSpec = InputAnimations.slideInBottomSlideOutBottom,
                             viewModel = otpManViewModel,
                             onValueChange = {
                                 Log.v("MainActivity", "onValueChanged -> $it")
