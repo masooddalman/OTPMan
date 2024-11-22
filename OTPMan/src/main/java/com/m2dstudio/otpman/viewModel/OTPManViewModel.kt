@@ -9,6 +9,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import com.m2dstudio.otpman.AnimationType
+import com.m2dstudio.otpman.ChipMode
 import com.m2dstudio.otpman.OTPState
 import com.m2dstudio.otpman.dataModel.DataModelChip
 
@@ -16,6 +17,7 @@ class OTPManViewModel(
     val count: Int,
     val keyboardType: KeyboardType = KeyboardType.Number,
     val animationType: AnimationType = AnimationType.Normal,
+    val mode: ChipMode = ChipMode.Square,
     val normal: DataModelChip = DataModelChip.normalGradient(),
     val selected: DataModelChip = DataModelChip.selectedGradient(),
     val verified: DataModelChip = DataModelChip.verifiedGradient(),

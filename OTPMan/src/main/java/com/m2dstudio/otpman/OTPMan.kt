@@ -1,5 +1,7 @@
 package com.m2dstudio.otpman
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -39,13 +41,18 @@ enum class OTPState{
 }
 
 enum class AnimationType{
-    Normal, Shake
+    Normal, Shake, None
+}
+
+enum class ChipMode {
+    Square, Line, None
 }
 
 @Composable
 fun OTPMan(modifier: Modifier,
            space:Int = 8,
            showRippleEffect:Boolean = false,
+           inputAnimationSpec: (AnimatedContentTransitionScope<String>.() -> ContentTransform)? = null,
            viewModel: OTPManViewModel,
            onValueChange:(String)->Unit = {},
            onComplete:(String)->Unit,
@@ -108,7 +115,7 @@ fun OTPMan(modifier: Modifier,
                 })
         },
             singleLine = true,
-            textStyle = TextStyle(fontSize = 1.sp, color = Color.Transparent),
+            textStyle = TextStyle(fontSize = 0.sp, color = Color.Transparent),
             keyboardOptions = KeyboardOptions(keyboardType = viewModel.keyboardType),
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
@@ -126,7 +133,8 @@ fun OTPMan(modifier: Modifier,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             items(viewModel.count) { index ->
-                Chip(modifier = Modifier,
+                Chip(
+                    modifier = Modifier,
                     index = index,
                     animationType = viewModel.animationType,
                     str = viewModel.textData[index],
@@ -134,7 +142,9 @@ fun OTPMan(modifier: Modifier,
                     normal = viewModel.normal,
                     selected = viewModel.selected,
                     verified = viewModel.verified,
-                    error = viewModel.error
+                    error = viewModel.error,
+                    mode = viewModel.mode,
+                    inputAnimationSpec = inputAnimationSpec
                 )
             }
         }

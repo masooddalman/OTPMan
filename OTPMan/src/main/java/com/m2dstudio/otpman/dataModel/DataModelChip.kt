@@ -41,7 +41,7 @@ data class DataModelChip(
             backColor = Gradients.harvey(),
             borderColor = Gradients.transparent(),
             borderWidth = 4, cornerRadius = 20,
-            textStyle = TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color.White)
+            textStyle = TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp)
         )
 
         fun errorGradient() = DataModelChip(
@@ -49,7 +49,7 @@ data class DataModelChip(
             backColor = Gradients.flair(),
             borderColor = Gradients.transparent(),
             borderWidth = 4, cornerRadius = 16,
-            textStyle =  TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color.White)
+            textStyle =  TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp)
         )
 
     }

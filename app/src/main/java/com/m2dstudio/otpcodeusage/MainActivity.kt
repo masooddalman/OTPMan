@@ -22,9 +22,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.m2dstudio.otpcodeusage.ui.theme.OTPCodeUsageTheme
+import com.m2dstudio.otpman.AnimationType
+import com.m2dstudio.otpman.ChipMode
 import com.m2dstudio.otpman.CountDownMode
 import com.m2dstudio.otpman.OTPMan
 import com.m2dstudio.otpman.OTPManCountDown
+import com.m2dstudio.otpman.animations.InputAnimations
 import com.m2dstudio.otpman.utils.generateAppHashKey
 import com.m2dstudio.otpman.viewModel.OTPManViewModel
 
@@ -34,6 +37,8 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return OTPManViewModel(
                     count = 5,
+                    mode = ChipMode.Square,
+                    animationType = AnimationType.None
                 ) as T
             }
         }
@@ -56,6 +61,7 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,) {
                         OTPMan(modifier = Modifier,
+                            inputAnimationSpec = InputAnimations.slideInBottomSlideOutBottom,
                             viewModel = otpManViewModel,
                             onValueChange = {
                                 Log.v("MainActivity", "onValueChanged -> $it")
@@ -101,7 +107,7 @@ fun MainActivityPreview() {
                     .padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,) {
-                OTPMan(modifier = Modifier, viewModel = OTPManViewModel(count = 5), onComplete = {})
+                OTPMan(modifier = Modifier, viewModel = OTPManViewModel(count = 5, mode = ChipMode.Line), onComplete = {})
             }
         }
     }

@@ -1,5 +1,8 @@
 package com.m2dstudio.otpman
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.animateIntAsState
@@ -34,15 +37,17 @@ enum class ChipState{
 }
 @Composable
 fun Chip(modifier: Modifier,
-         index:Int=0,
-         animationType: AnimationType = AnimationType.Normal,
-         str:String="",
-         state: ChipState,
-         normal:DataModelChip,
-         selected:DataModelChip,
-         verified:DataModelChip,
-         error:DataModelChip,
-         )
+    index:Int=0,
+    animationType: AnimationType = AnimationType.Normal,
+    str:String="",
+    state: ChipState,
+    normal:DataModelChip,
+    selected:DataModelChip,
+    verified:DataModelChip,
+    error:DataModelChip,
+    mode: ChipMode = ChipMode.Square,
+    inputAnimationSpec: (AnimatedContentTransitionScope<String>.() -> ContentTransform)? = null
+)
 {
     val animationDuration = 250
     val animationDelay = if(state == ChipState.Verified || state == ChipState.Error) index*50 else 0
@@ -156,32 +161,52 @@ fun Chip(modifier: Modifier,
         normalizedAngle = normalizedAngle,
         angleInRadians = angleInRadians)
 
-    Box(modifier = modifier
-        .shake(shakeController)
-        .padding(bottom = bottomPadding.value.dp)
-        .size(animatedSize.value.dp)
-        .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
-        .background(
-            brush = Brush.linearGradient(
-                colors = listOf(animatedBackColor.value, animatedBackColor2.value),
-                start = start,
-                end = end
+    Box(
+        modifier=modifier
+            .shake(shakeController)
+            .padding(bottom = bottomPadding.value.dp),
+        contentAlignment = if(mode == ChipMode.Square) Alignment.Center else Alignment.BottomCenter
+    ){
+        Box(modifier = modifier
+            .size(
+                animatedSize.value.dp,
+                if (mode == ChipMode.Square) animatedSize.value.dp else if (mode == ChipMode.Line) 5.dp else 0.dp
+            )
+            .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(animatedBackColor.value, animatedBackColor2.value),
+                    start = start,
+                    end = end
+                )
+            )
+            .border(
+                width = animatedBorderWidth.value.dp,
+                brush = Brush.linearGradient(
+                    colors = listOf(animatedBorderColor.value, animatedBorderColor2.value),
+                    start = start,
+                    end = end
+                ),
+                shape = RoundedCornerShape(animatedCornerRadius.value.dp)
             )
         )
-        .border(
-            width = animatedBorderWidth.value.dp,
-            brush = Brush.linearGradient(
-                colors = listOf(animatedBorderColor.value, animatedBorderColor2.value),
-                start = start,
-                end = end
-            ),
-            shape = RoundedCornerShape(animatedCornerRadius.value.dp)
-        ),
-        contentAlignment = Alignment.Center
-    ){
-        Text(
-            modifier = modifier.shake(shakeController),
-            text = str, style = textStyle)
+        if(inputAnimationSpec == null)
+        {
+            Text(
+                modifier = modifier.shake(shakeController),
+                text = str, style = textStyle)
+        }
+        else
+        {
+            AnimatedContent(targetState = str, label = "chip text",
+                transitionSpec = inputAnimationSpec
+            ) { str ->
+                Text(
+                    modifier = modifier.shake(shakeController),
+                    text = str, style = textStyle)
+            }
+        }
+
     }
 }
 
