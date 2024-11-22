@@ -42,6 +42,10 @@ enum class AnimationType{
     Normal, Shake
 }
 
+enum class ChipMode {
+    Square, Line, None
+}
+
 @Composable
 fun OTPMan(modifier: Modifier,
            space:Int = 8,
@@ -108,7 +112,7 @@ fun OTPMan(modifier: Modifier,
                 })
         },
             singleLine = true,
-            textStyle = TextStyle(fontSize = 1.sp, color = Color.Transparent),
+            textStyle = TextStyle(fontSize = 0.sp, color = Color.Transparent),
             keyboardOptions = KeyboardOptions(keyboardType = viewModel.keyboardType),
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
@@ -134,7 +138,8 @@ fun OTPMan(modifier: Modifier,
                     normal = viewModel.normal,
                     selected = viewModel.selected,
                     verified = viewModel.verified,
-                    error = viewModel.error
+                    error = viewModel.error,
+                    mode = viewModel.mode
                 )
             }
         }
