@@ -164,7 +164,10 @@ fun Chip(modifier: Modifier,
         contentAlignment = if(mode == ChipMode.Square) Alignment.Center else Alignment.BottomCenter
     ){
         Box(modifier = modifier
-            .size(animatedSize.value.dp, if(mode == ChipMode.Square) animatedSize.value.dp else if(mode == ChipMode.Line) 5.dp else 0.dp)
+            .size(
+                animatedSize.value.dp,
+                if (mode == ChipMode.Square) animatedSize.value.dp else if (mode == ChipMode.Line) 5.dp else 0.dp
+            )
             .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
             .background(
                 brush = Brush.linearGradient(
