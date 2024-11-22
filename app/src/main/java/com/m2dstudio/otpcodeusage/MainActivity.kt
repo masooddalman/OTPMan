@@ -25,6 +25,7 @@ import com.m2dstudio.otpcodeusage.ui.theme.OTPCodeUsageTheme
 import com.m2dstudio.otpman.AnimationType
 import com.m2dstudio.otpman.ChipMode
 import com.m2dstudio.otpman.CountDownMode
+import com.m2dstudio.otpman.CounterAnimationType
 import com.m2dstudio.otpman.OTPMan
 import com.m2dstudio.otpman.OTPManCountDown
 import com.m2dstudio.otpman.animations.InputAnimations
@@ -73,7 +74,9 @@ class MainActivity : ComponentActivity() {
                                 Log.v("MainActivity", "animation done $it")
                             })
                         Spacer(modifier = Modifier.padding(16.dp))
-                        OTPManCountDown( secondsInFuture = 70 , mode = CountDownMode.MinutesThenSeconds)
+                        OTPManCountDown( secondsInFuture = 70 ,
+                            animationType = CounterAnimationType.Slide,
+                            mode = CountDownMode.MinutesThenSeconds)
                         Spacer(modifier = Modifier.padding(16.dp))
                         Button(onClick = {
                             otpManViewModel.makeItSuccess()
