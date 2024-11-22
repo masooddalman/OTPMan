@@ -42,6 +42,7 @@ fun Chip(modifier: Modifier,
          selected:DataModelChip,
          verified:DataModelChip,
          error:DataModelChip,
+         mode: ChipMode = ChipMode.Square
          )
 {
     val animationDuration = 250
@@ -156,29 +157,32 @@ fun Chip(modifier: Modifier,
         normalizedAngle = normalizedAngle,
         angleInRadians = angleInRadians)
 
-    Box(modifier = modifier
-        .shake(shakeController)
-        .padding(bottom = bottomPadding.value.dp)
-        .size(animatedSize.value.dp)
-        .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
-        .background(
-            brush = Brush.linearGradient(
-                colors = listOf(animatedBackColor.value, animatedBackColor2.value),
-                start = start,
-                end = end
+    Box(
+        modifier=modifier
+            .shake(shakeController)
+            .padding(bottom = bottomPadding.value.dp),
+        contentAlignment = if(mode == ChipMode.Square) Alignment.Center else Alignment.BottomCenter
+    ){
+        Box(modifier = modifier
+            .size(animatedSize.value.dp, if(mode == ChipMode.Square) animatedSize.value.dp else if(mode == ChipMode.Line) 5.dp else 0.dp)
+            .clip(RoundedCornerShape(animatedCornerRadius.value.dp))
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(animatedBackColor.value, animatedBackColor2.value),
+                    start = start,
+                    end = end
+                )
+            )
+            .border(
+                width = animatedBorderWidth.value.dp,
+                brush = Brush.linearGradient(
+                    colors = listOf(animatedBorderColor.value, animatedBorderColor2.value),
+                    start = start,
+                    end = end
+                ),
+                shape = RoundedCornerShape(animatedCornerRadius.value.dp)
             )
         )
-        .border(
-            width = animatedBorderWidth.value.dp,
-            brush = Brush.linearGradient(
-                colors = listOf(animatedBorderColor.value, animatedBorderColor2.value),
-                start = start,
-                end = end
-            ),
-            shape = RoundedCornerShape(animatedCornerRadius.value.dp)
-        ),
-        contentAlignment = Alignment.Center
-    ){
         Text(
             modifier = modifier.shake(shakeController),
             text = str, style = textStyle)
