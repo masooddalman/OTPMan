@@ -1,5 +1,9 @@
 package com.m2dstudio.otpman
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -10,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,11 +35,16 @@ enum class CountDownMode{
     Seconds, Minutes, MinutesThenSeconds
 }
 
+enum class CounterAnimationType {
+    None, Fade, Slide, SlideInverse
+}
+
 @Composable
 fun OTPManCountDown(
     modifier: Modifier=Modifier,
     secondsInFuture: Int = 120,
     mode: CountDownMode = CountDownMode.Minutes,
+    animationType: CounterAnimationType = CounterAnimationType.Fade,
     prefixContent:String? = "",
     postFixContent:String? = "",
     textStyle: TextStyle = TextStyle(),
@@ -65,11 +75,67 @@ fun OTPManCountDown(
     }
 
     Box(
-        modifier = Modifier,
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ){
         if(isRunning || resendContent == null) {
-                Text(text = "$prefixContent ${makeString(mode, timeLeft)} $postFixContent", modifier = modifier, style = textStyle)
+            var oldTimeLeft by remember {
+                mutableIntStateOf(timeLeft)
+            }
+            SideEffect {
+                oldTimeLeft = timeLeft
+            }
+            Row {
+                Text(text = "$prefixContent ", style = textStyle)
+                if(animationType == CounterAnimationType.None) {
+                    Text(text = makeString(mode, timeLeft), style = textStyle)
+                }
+                else {
+                    val timeString = makeString(mode, timeLeft)
+                    val oldTimeString = makeString(mode, oldTimeLeft)
+                    for (i in timeString.indices) {
+                        val oldChar = oldTimeString.getOrNull(i)
+                        val newChar = timeString.getOrNull(i)
+                        val char = if (oldChar == newChar) {
+                            oldChar
+                        } else {
+                            newChar
+                        }
+                        if(animationType == CounterAnimationType.Fade) {
+                            AnimatedContent(
+                                targetState = char,
+                                label = "animated time string"
+                            ) {
+                                Text(text = it.toString(), style = textStyle)
+                            }
+                        }
+                        else if (animationType == CounterAnimationType.Slide) {
+                            AnimatedContent(
+                                targetState = char,
+                                transitionSpec = {
+                                    slideInVertically { it } togetherWith  slideOutVertically { -it }
+                                },
+                                label = "animated time string"
+                            ) {
+                                Text(text = it.toString(), style = textStyle)
+                            }
+                        }
+                        else if(animationType == CounterAnimationType.SlideInverse) {
+                            AnimatedContent(
+                                targetState = char,
+                                transitionSpec = {
+                                    slideInVertically { -it } togetherWith  slideOutVertically { it }
+                                },
+                                label = "animated time string"
+                            ) {
+                                Text(text = it.toString(), style = textStyle)
+                            }
+                        }
+                    }
+                }
+                Text(text = " $postFixContent", style = textStyle)
+            }
+
         }
         else {
             Row(content = resendContent,
