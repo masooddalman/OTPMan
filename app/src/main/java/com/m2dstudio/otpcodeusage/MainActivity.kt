@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.m2dstudio.otpcodeusage.ui.theme.OTPCodeUsageTheme
+import com.m2dstudio.otpman.AnimationType
+import com.m2dstudio.otpman.ChipMode
 import com.m2dstudio.otpman.CountDownMode
 import com.m2dstudio.otpman.OTPMan
 import com.m2dstudio.otpman.OTPManCountDown
@@ -34,6 +36,8 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return OTPManViewModel(
                     count = 5,
+                    mode = ChipMode.None,
+                    animationType = AnimationType.Shake
                 ) as T
             }
         }
@@ -101,7 +105,7 @@ fun MainActivityPreview() {
                     .padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,) {
-                OTPMan(modifier = Modifier, viewModel = OTPManViewModel(count = 5), onComplete = {})
+                OTPMan(modifier = Modifier, viewModel = OTPManViewModel(count = 5, mode = ChipMode.Line), onComplete = {})
             }
         }
     }
