@@ -30,11 +30,16 @@ enum class CountDownMode{
     Seconds, Minutes, MinutesThenSeconds
 }
 
+enum class CounterAnimationType {
+    None, Fade, Slide, SlideInverse
+}
+
 @Composable
 fun OTPManCountDown(
     modifier: Modifier=Modifier,
     secondsInFuture: Int = 120,
     mode: CountDownMode = CountDownMode.Minutes,
+    animationType: CounterAnimationType = CounterAnimationType.Fade,
     prefixContent:String? = "",
     postFixContent:String? = "",
     textStyle: TextStyle = TextStyle(),
