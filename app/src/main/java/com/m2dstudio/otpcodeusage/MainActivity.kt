@@ -36,8 +36,8 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return OTPManViewModel(
                     count = 5,
-                    mode = ChipMode.None,
-                    animationType = AnimationType.Shake
+                    mode = ChipMode.Square,
+                    animationType = AnimationType.None
                 ) as T
             }
         }

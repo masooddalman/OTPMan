@@ -39,7 +39,7 @@ enum class OTPState{
 }
 
 enum class AnimationType{
-    Normal, Shake
+    Normal, Shake, None
 }
 
 enum class ChipMode {
