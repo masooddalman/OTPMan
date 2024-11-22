@@ -1,5 +1,8 @@
 package com.m2dstudio.otpman
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.animateIntAsState
@@ -34,16 +37,17 @@ enum class ChipState{
 }
 @Composable
 fun Chip(modifier: Modifier,
-         index:Int=0,
-         animationType: AnimationType = AnimationType.Normal,
-         str:String="",
-         state: ChipState,
-         normal:DataModelChip,
-         selected:DataModelChip,
-         verified:DataModelChip,
-         error:DataModelChip,
-         mode: ChipMode = ChipMode.Square
-         )
+    index:Int=0,
+    animationType: AnimationType = AnimationType.Normal,
+    str:String="",
+    state: ChipState,
+    normal:DataModelChip,
+    selected:DataModelChip,
+    verified:DataModelChip,
+    error:DataModelChip,
+    mode: ChipMode = ChipMode.Square,
+    inputAnimationSpec: (AnimatedContentTransitionScope<String>.() -> ContentTransform)? = null
+)
 {
     val animationDuration = 250
     val animationDelay = if(state == ChipState.Verified || state == ChipState.Error) index*50 else 0
