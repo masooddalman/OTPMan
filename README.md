@@ -56,13 +56,13 @@ OTPMan(modifier = Modifier,
 To let the library automatically read the OTP code, you have to generate app hash key for your application, it is a unique an 11-character string based on your app package name and signing info.
 please follow steps below:
 
- 1. **Generating app hash key**
- Write the code below in the `onCreate` function of the first Activity of the application
+1. **Generating app hash key**
+   Write the code below in the `onCreate` function of the first Activity of the application
  ```Kotlin
  generateAppHashKey(this)
 ```
- 2. **Search for the generated hash key in the Logcat** 
-*to find the hash key easier, add this to logcat filter*
+2. **Search for the generated hash key in the Logcat**
+   *to find the hash key easier, add this to logcat filter*
 
 ![logcatFilter](https://github.com/masooddalman/OTPMan/blob/main/assets/logcat_filter.png)
 ```
@@ -72,16 +72,16 @@ otpman
 |--------|--------|
 | ![debug](https://github.com/masooddalman/OTPMan/blob/main/assets/sample_debug_logcat.png) | ![release](https://github.com/masooddalman/OTPMan/blob/main/assets/sample_release_logcat.png) |
 
- 3. **Removing the code**
+3. **Removing the code**
 
-	**ATTENTION 1** : you can test your app with the DEBUG hash key, but don't forget to use the RELEASE one on production
+   **ATTENTION 1** : you can test your app with the DEBUG hash key, but don't forget to use the RELEASE one on production
 
-	**ATTENTION 2** : Don't forget to remove the code above from your App before building a release, it's only for generating the hash key
+   **ATTENTION 2** : Don't forget to remove the code above from your App before building a release, it's only for generating the hash key
 
- 4. **dding the Hash key in your OTP SMS**
-  [Construct a verification message](https://developers.google.com/identity/sms-retriever/verify#1_construct_a_verification_message)
+4. **dding the Hash key in your OTP SMS**
+   [Construct a verification message](https://developers.google.com/identity/sms-retriever/verify#1_construct_a_verification_message)
 -   Be no longer than 140 bytes
--   Contain a one-time code that the client sends back to your server to complete the verification flow 
+-   Contain a one-time code that the client sends back to your server to complete the verification flow
 -   Include an 11-character hash string that identifies your app
 
 Otherwise, the contents of the verification message can be whatever you choose. It is helpful to create a message from which you can easily extract the one-time code later on. For example, a valid verification message might look like the following:
@@ -113,14 +113,18 @@ you can also change the animation type in the **OTPManViewModel construction** l
 ```
 animationType = AnimationType.Normal
  ```
- or
+or
  ```
 animationType = AnimationType.Shake
 ```
+or
+ ```
+animationType = AnimationType.None
+```
 it automatically removes the success or failed UI by any changes in the inserted code
-| normal | shake |
-|--------|--------|
-| ![normal animation](https://github.com/masooddalman/OTPMan/blob/main/assets/normal_animation.gif) | ![shake animation](https://github.com/masooddalman/OTPMan/blob/main/assets/shake_animation.gif) |
+| normal | shake | None|
+|--------|--------|--------|
+| ![normal animation](https://github.com/masooddalman/OTPMan/blob/main/assets/normal_animation.gif) | ![shake animation](https://github.com/masooddalman/OTPMan/blob/main/assets/shake_animation.gif) | ![none animation](https://github.com/masooddalman/OTPMan/blob/main/assets/none_animation.gif) |
 
 ## Styling
 you can change style (background and border) of the fields in **the OTPManViewModel construction** using `DataModelChip` class.
@@ -136,19 +140,20 @@ DataModelChip(
 )
 ```
 
- - `size`: size of each input field.
- -  `backColor`: input fields background color (list of one color means solid color and list of tow
+- `size`: size of each input field.
+-  `backColor`: input fields background color (list of one color means solid color and list of tow
    colors means gradient)
- - `borderColor`: input fields border color (list
-   of one color means solid color and list of tow colors means gradient)
+- `borderColor`: input fields border color (list
+  of one color means solid color and list of tow colors means gradient)
     - `angle`: angle of background and border gradient
- - `borderWidth`: input fields border width `cornerRadius`: input fields corner radius
- -  `textStyle`: input field text stye
+- `borderWidth`: input fields border width `cornerRadius`: input fields corner radius
+-  `textStyle`: input field text stye
 
-**the OTPManViewModel construction** has 4 different inputs like below:
+**the OTPManViewModel construction** has 4 different states like below:
 ```
 OTPManViewModel(  
     count = 5,  
+    mode = ChipMode.Square,
     animationType = AnimationType.Shake,  
     normal = DataModelChip(...),  
     selected = DataModelChip(...),  
@@ -157,10 +162,19 @@ OTPManViewModel(
 )
 ```
 
- - `normal` : when the input field is empty
- - `selected` : when the input field is filled
- - `verified` : input field style in success mode
- - `error` : input field style in failed mode
+- `normal` : when the input field is empty
+- `selected` : when the input field is filled
+- `verified` : input field style in success mode
+- `error` : input field style in failed mode
+
+**Mode:**
+in the piece of code above you can see `mode` parameter
+you can pass 3 different type of mode like below (default : Square):
+
+| ChipMode.Square |  ChipMode.Line | ChipMode.None |
+|--------|--------|--------|
+| ![mode square](https://github.com/masooddalman/OTPMan/blob/main/assets/modeSquare.jpg) | ![mode line](https://github.com/masooddalman/OTPMan/blob/main/assets/modeLine.jpg) | ![mode none](https://github.com/masooddalman/OTPMan/blob/main/assets/modeNone.jpg) |
+
 
 **Bonus:**
 The library comes with a class named Gradients which has different type of gradients ready to use.
@@ -176,17 +190,29 @@ Gradients.gradeGray(0.5f)
 
 **OTPMan composable** itself has some configurations like below:
 
- - `space` : space between each input fields (default = 8dp)
- - `showRippleEffect` : show ripple effect on user touch (default =
-   false)
- - `onValueChange‍` : it triggers on every changes in fields (either
-   adding or removing a character)
- - `onAnimationDone`: it triggers after success or failed animation was
-   done
- - `onComplete` : it triggers when the code completely filled, either by
-   the user or auto-reading from the SMS
+- `space` : space between each input fields (default = 8dp)
+- `showRippleEffect` : show ripple effect on user touch (default =
+  false)
+- `inputAnimationSpec`: insert and delete character animation (default : null)
+- `onValueChange‍` : it triggers on every changes in fields (either
+  adding or removing a character)
+- `onAnimationDone`: it triggers after success or failed animation was
+  done
+- `onComplete` : it triggers when the code completely filled, either by
+  the user or auto-reading from the SMS
 
+**Input Animation:**
+There is a class named `InputAnimations` which contains a few example of animation for `OTPMan` `inputAnimationSpec` field. you can use it directly like below:
 
+    InputAnimations.slideInBottomSlideOutTop
+    InputAnimations.slideInBottomSlideOutBottom
+    InputAnimations.fadeInFadeOut
+    InputAnimations.fadeInSlideOutTop
+    InputAnimations.fadeInSlideOutBottom
+    InputAnimations.slideInBottomFadeOut
+    InputAnimations.slideInTopFadeOut
+
+or you can make your own animation and pass it to the composable
 ## Count-Down
 Every screen with verification code input needs a count-down timer.
 you can use **OTPManCountDown composable** in the app's UI like below:
@@ -194,17 +220,22 @@ you can use **OTPManCountDown composable** in the app's UI like below:
     OTPManCountDown()
 the configuration will be:
 
- - `secondsInFuture`: timer in seconds (default : 120 seconds)
- - `mode`: count-down 3 different formats (default: Minute)
+- `secondsInFuture`: timer in seconds (default : 120 seconds)
+- `mode`: count-down 3 different formats (default: Minute)
 
-  | Seconds | Minutes | MinutesThenSeconds |
+| Seconds | Minutes | MinutesThenSeconds |
 |--------|--------|--------|
 | ![seconds mode](https://github.com/masooddalman/OTPMan/blob/main/assets/sec.gif) | ![minutes mode](https://github.com/masooddalman/OTPMan/blob/main/assets/min.gif) | ![minutesThenSeconds mode](https://github.com/masooddalman/OTPMan/blob/main/assets/minsec.gif) |
+- animationType: 3 different animations (default: None)
 
- - `prefixContent`: a String to show **before** the count-down
- - `postFixContent`: a String to show **after** the count-down
- - `textStyle`: style of the count-down
- - `onFinished`: it triggers when the count-down is finished
- - `onTick`: it triggers on each second
- - `onResend`: it triggers when the user interacts with the Resend button
- - `resendContent`: the content of resend button
+| None | Fade | Slide | SlideInverse |
+|--------|--------|--------|--------|
+| ![None](https://github.com/masooddalman/OTPMan/blob/main/assets/min.gif) | ![fade](https://github.com/masooddalman/OTPMan/blob/main/assets/fade.gif) | ![slide](https://github.com/masooddalman/OTPMan/blob/main/assets/slide.gif) | ![slideInverse](https://github.com/masooddalman/OTPMan/blob/main/assets/slideInverse.gif) |
+
+- `prefixContent`: a String to show **before** the count-down
+- `postFixContent`: a String to show **after** the count-down
+- `textStyle`: style of the count-down
+- `onFinished`: it triggers when the count-down is finished
+- `onTick`: it triggers on each second
+- `onResend`: it triggers when the user interacts with the Resend button
+- `resendContent`: the content of resend button
