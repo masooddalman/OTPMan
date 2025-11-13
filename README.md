@@ -2,6 +2,8 @@
 
 ![Kotlin](https://img.shields.io/badge/language-Kotlin-blue) ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-UI%20Framework-green) ![Android](https://img.shields.io/badge/Platform-Android-orange)
 
+![OtpMan cover](https://github.com/masooddalman/OTPMan/blob/main/assets/otpmanCover.png)
+
 ## Overview
 **OTPMan** is an all-in-one solution which automatically reads and inserts OTP (One-Time Password) codes received via SMS. This library functions without requiring SMS permissions, leveraging the Android OTP API for secure and easy OTP handling within your app’s UI. It automatically manages animation, state and data on every situation with customizable colors, shapes and animation.
 
